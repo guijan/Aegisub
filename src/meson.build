@@ -250,3 +250,13 @@ foreach opt: opt_src
         aegisub_src += files(opt[1])
     endif
 endforeach
+
+conf_h = configuration_data()
+if cc.has_function('alloca', prefix: '#include <stdlib.h>')
+    # We already use <stdlib.h> unconditionally.
+elif cc.has_fuction('alloca', prefix: '#include <alloca.h>')
+    conf_data.set('HAVE_ALLOCA_H', true)
+elif cc.has_function('_alloca', prefix: '#include <malloc.h>') 
+    conf_data.set('HAVE_MALLOC_H', true)
+endif
+configure_file(output: 'config.h', configuration: conf_h)
